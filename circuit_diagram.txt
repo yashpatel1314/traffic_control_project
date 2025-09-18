@@ -1,0 +1,113 @@
+4-WAY TRAFFIC CONTROL SYSTEM - CIRCUIT DIAGRAM
+================================================
+
+ARDUINO CONNECTIONS:
+===================
+
+Traffic Lights (North-South):
+- NS_RED (Pin 2) → 220Ω Resistor → Red LED → GND
+- NS_YELLOW (Pin 3) → 220Ω Resistor → Yellow LED → GND  
+- NS_GREEN (Pin 4) → 220Ω Resistor → Green LED → GND
+
+Traffic Lights (East-West):
+- EW_RED (Pin 5) → 220Ω Resistor → Red LED → GND
+- EW_YELLOW (Pin 6) → 220Ω Resistor → Yellow LED → GND
+- EW_GREEN (Pin 7) → 220Ω Resistor → Green LED → GND
+
+Crosswalk Signals (North-South):
+- NS_CROSSWALK_STOP (Pin 8) → 220Ω Resistor → Red LED → GND
+- NS_CROSSWALK_GO (Pin 9) → 220Ω Resistor → Green LED → GND
+
+Crosswalk Signals (East-West):
+- EW_CROSSWALK_STOP (Pin 10) → 220Ω Resistor → Red LED → GND
+- EW_CROSSWALK_GO (Pin 11) → 220Ω Resistor → Green LED → GND
+
+Input Buttons:
+- NS_BUTTON (Pin 12) → Push Button → GND (with internal pullup)
+- EW_BUTTON (Pin 13) → Push Button → GND (with internal pullup)
+- EMERGENCY_BUTTON (Pin A0) → Push Button → GND (with internal pullup)
+
+POWER:
+- Arduino 5V → Breadboard power rail
+- Arduino GND → Breadboard ground rail
+
+COMPONENT LIST:
+===============
+
+Required Components:
+- 1x Arduino Uno (or compatible)
+- 1x Breadboard (830 tie points recommended)
+- 1x Jumper wire kit (male-male, male-female)
+- 6x 220Ω Resistors (for LED current limiting)
+- 3x Push buttons (momentary, normally open)
+- 6x LEDs (2x Red, 2x Yellow, 2x Green for traffic lights)
+- 4x LEDs (2x Red, 2x Green for crosswalk signals)
+- 1x USB cable (for programming and power)
+
+Optional Components:
+- 1x 9V Battery + connector (for standalone operation)
+- 1x 9V to 5V voltage regulator (if using battery)
+- 1x Project box/enclosure
+- 1x Small speaker (for audio alerts)
+- 1x LCD display (for countdown timers)
+
+WIRING DIAGRAM (ASCII):
+======================
+
+                    [Arduino Uno]
+                         |
+    Pin 2 ──[220Ω]──[Red LED]── GND    (NS Red)
+    Pin 3 ──[220Ω]──[Yellow LED]── GND (NS Yellow)  
+    Pin 4 ──[220Ω]──[Green LED]── GND  (NS Green)
+    Pin 5 ──[220Ω]──[Red LED]── GND    (EW Red)
+    Pin 6 ──[220Ω]──[Yellow LED]── GND (EW Yellow)
+    Pin 7 ──[220Ω]──[Green LED]── GND  (EW Green)
+    Pin 8 ──[220Ω]──[Red LED]── GND    (NS Crosswalk Stop)
+    Pin 9 ──[220Ω]──[Green LED]── GND  (NS Crosswalk Go)
+    Pin 10 ─[220Ω]──[Red LED]── GND    (EW Crosswalk Stop)
+    Pin 11 ─[220Ω]──[Green LED]── GND  (EW Crosswalk Go)
+    Pin 12 ─[Button]── GND              (NS Button)
+    Pin 13 ─[Button]── GND              (EW Button)
+    Pin A0 ─[Button]── GND              (Emergency Button)
+
+PHYSICAL LAYOUT SUGGESTIONS:
+===========================
+
+1. Traffic Light Layout (4 corners of intersection):
+   - Each corner: Red LED (top), Yellow LED (middle), Green LED (bottom)
+   - Mount on small posts or cardboard cutouts
+
+2. Crosswalk Signals:
+   - Place near each crosswalk
+   - Red LED (hand symbol) and Green LED (walking person symbol)
+   - Can use cardboard cutouts with LED symbols
+
+3. Pedestrian Buttons:
+   - Mount on posts near crosswalks
+   - Label clearly: "Push to Cross"
+
+4. Emergency Button:
+   - Mount in accessible location
+   - Label: "Emergency Override"
+
+TIMING SEQUENCE:
+===============
+
+Normal Operation Cycle (Total: ~40 seconds):
+1. NS Green, EW Red (15 seconds)
+2. NS Yellow, EW Red (3 seconds)  
+3. All Red (2 seconds)
+4. EW Green, NS Red (15 seconds)
+5. EW Yellow, NS Red (3 seconds)
+6. All Red (2 seconds)
+7. Repeat...
+
+Crosswalk Features:
+- Buttons extend green time by 10 seconds
+- Flashing warning during last 3 seconds
+- Only works during appropriate green phase
+
+Emergency Mode:
+- All lights flash red
+- Overrides normal operation
+- Press emergency button again to resume
