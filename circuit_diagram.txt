@@ -1,12 +1,20 @@
 4-WAY TRAFFIC CONTROL SYSTEM - CIRCUIT DIAGRAM
 ================================================
 
+This file covers wiring for BOTH sketches.
+The enhanced build reuses pins 7-12 for the LCD and moves crosswalk
+signals to analog pins, so the two builds are NOT pin-compatible.
+
+════════════════════════════════════════════════════════════════════════
+BASIC BUILD  —  traffic_control.ino
+════════════════════════════════════════════════════════════════════════
+
 ARDUINO CONNECTIONS:
 ===================
 
 Traffic Lights (North-South):
 - NS_RED (Pin 2) → 220Ω Resistor → Red LED → GND
-- NS_YELLOW (Pin 3) → 220Ω Resistor → Yellow LED → GND  
+- NS_YELLOW (Pin 3) → 220Ω Resistor → Yellow LED → GND
 - NS_GREEN (Pin 4) → 220Ω Resistor → Green LED → GND
 
 Traffic Lights (East-West):
@@ -31,33 +39,96 @@ POWER:
 - Arduino 5V → Breadboard power rail
 - Arduino GND → Breadboard ground rail
 
-COMPONENT LIST:
-===============
+════════════════════════════════════════════════════════════════════════
+ENHANCED BUILD  —  traffic_control_enhanced.ino
+════════════════════════════════════════════════════════════════════════
 
-Required Components:
+Pins 7-12 are claimed by the LCD in 4-bit mode.
+Crosswalk LEDs and buttons move to analog pins.
+EW_GREEN moves to pin 13.
+
+Traffic Lights (North-South):
+- NS_RED (Pin 2) → 220Ω Resistor → Red LED → GND
+- NS_YELLOW (Pin 3) → 220Ω Resistor → Yellow LED → GND
+- NS_GREEN (Pin 4) → 220Ω Resistor → Green LED → GND
+
+Traffic Lights (East-West):
+- EW_RED (Pin 5) → 220Ω Resistor → Red LED → GND
+- EW_YELLOW (Pin 6) → 220Ω Resistor → Yellow LED → GND
+- EW_GREEN (Pin 13) → 220Ω Resistor → Green LED → GND
+
+16x2 LCD (HD44780, 4-bit mode):
+- LCD RS  (Pin 7)
+- LCD EN  (Pin 8)
+- LCD D4  (Pin 9)
+- LCD D5  (Pin 10)
+- LCD D6  (Pin 11)
+- LCD D7  (Pin 12)
+- LCD VSS → GND
+- LCD VDD → 5V
+- LCD V0  → Wiper of 10kΩ pot (contrast adjustment)
+- LCD RW  → GND
+- LCD A   → 5V (backlight +, via 220Ω)
+- LCD K   → GND (backlight -)
+
+Crosswalk Signals (North-South):
+- NS_CROSSWALK_STOP (Pin A1) → 220Ω Resistor → Red LED → GND
+- NS_CROSSWALK_GO (Pin A2) → 220Ω Resistor → Green LED → GND
+
+Crosswalk Signals (East-West):
+- EW_CROSSWALK_STOP (Pin A3) → 220Ω Resistor → Red LED → GND
+- EW_CROSSWALK_GO (Pin A4) → 220Ω Resistor → Green LED → GND
+
+Input Buttons:
+- NS_BUTTON (Pin A5) → Push Button → GND (with internal pullup)
+- EW_BUTTON (Pin A6) → Push Button → GND (with internal pullup)
+- EMERGENCY_BUTTON (Pin A0) → Push Button → GND (with internal pullup)
+- NIGHT_MODE_BUTTON (Pin 1/TX) → Push Button → GND  ← see NOTE below
+- SPEAKER_PIN (Pin 0/RX) → Passive buzzer → GND     ← see NOTE below
+
+NOTE: Pins 0 (RX) and 1 (TX) are the hardware serial lines.
+Using them while Serial.begin(9600) is active causes conflicts.
+For serial debugging AND audio/night-mode, move SPEAKER_PIN and
+NIGHT_MODE_BUTTON to any unused digital pin (e.g. A6/A7 are
+analog-input only on the Uno, so pick a free digital pin instead).
+
+POWER:
+- Arduino 5V → Breadboard power rail
+- Arduino GND → Breadboard ground rail
+
+════════════════════════════════════════════════════════════════════════
+COMPONENT LIST
+════════════════════════════════════════════════════════════════════════
+
+Basic Build (traffic_control.ino):
 - 1x Arduino Uno (or compatible)
 - 1x Breadboard (830 tie points recommended)
 - 1x Jumper wire kit (male-male, male-female)
-- 6x 220Ω Resistors (for LED current limiting)
+- 10x 220Ω Resistors (for LED current limiting)
 - 3x Push buttons (momentary, normally open)
 - 6x LEDs (2x Red, 2x Yellow, 2x Green for traffic lights)
 - 4x LEDs (2x Red, 2x Green for crosswalk signals)
 - 1x USB cable (for programming and power)
 
-Optional Components:
+Additional components for Enhanced Build (traffic_control_enhanced.ino):
+- 1x 16x2 LCD display (HD44780 compatible)
+- 1x 10kΩ potentiometer (LCD contrast)
+- 1x Passive buzzer or small speaker
+- 1x Extra push button (night-mode toggle)
+- 4x Additional 220Ω resistors
+
+Optional (both builds):
 - 1x 9V Battery + connector (for standalone operation)
 - 1x 9V to 5V voltage regulator (if using battery)
 - 1x Project box/enclosure
-- 1x Small speaker (for audio alerts)
-- 1x LCD display (for countdown timers)
 
-WIRING DIAGRAM (ASCII):
-======================
+WIRING DIAGRAM (ASCII) — BASIC BUILD:
+======================================
 
                     [Arduino Uno]
                          |
     Pin 2 ──[220Ω]──[Red LED]── GND    (NS Red)
-    Pin 3 ──[220Ω]──[Yellow LED]── GND (NS Yellow)  
+    Pin 3 ──[220Ω]──[Yellow LED]── GND (NS Yellow)
     Pin 4 ──[220Ω]──[Green LED]── GND  (NS Green)
     Pin 5 ──[220Ω]──[Red LED]── GND    (EW Red)
     Pin 6 ──[220Ω]──[Yellow LED]── GND (EW Yellow)
@@ -66,9 +137,36 @@ WIRING DIAGRAM (ASCII):
     Pin 9 ──[220Ω]──[Green LED]── GND  (NS Crosswalk Go)
     Pin 10 ─[220Ω]──[Red LED]── GND    (EW Crosswalk Stop)
     Pin 11 ─[220Ω]──[Green LED]── GND  (EW Crosswalk Go)
-    Pin 12 ─[Button]── GND              (NS Button)
-    Pin 13 ─[Button]── GND              (EW Button)
+    Pin 12 ─[Button]── GND              (NS Walk Button)
+    Pin 13 ─[Button]── GND              (EW Walk Button)
     Pin A0 ─[Button]── GND              (Emergency Button)
+
+WIRING DIAGRAM (ASCII) — ENHANCED BUILD:
+==========================================
+
+                    [Arduino Uno]
+                         |
+    Pin 2 ──[220Ω]──[Red LED]── GND    (NS Red)
+    Pin 3 ──[220Ω]──[Yellow LED]── GND (NS Yellow)
+    Pin 4 ──[220Ω]──[Green LED]── GND  (NS Green)
+    Pin 5 ──[220Ω]──[Red LED]── GND    (EW Red)
+    Pin 6 ──[220Ω]──[Yellow LED]── GND (EW Yellow)
+    Pin 7  ─[LCD RS]
+    Pin 8  ─[LCD EN]
+    Pin 9  ─[LCD D4]
+    Pin 10 ─[LCD D5]
+    Pin 11 ─[LCD D6]
+    Pin 12 ─[LCD D7]
+    Pin 13 ─[220Ω]──[Green LED]── GND  (EW Green)
+    Pin A0 ─[Button]── GND              (Emergency Button)
+    Pin A1 ─[220Ω]──[Red LED]── GND    (NS Crosswalk Stop)
+    Pin A2 ─[220Ω]──[Green LED]── GND  (NS Crosswalk Go)
+    Pin A3 ─[220Ω]──[Red LED]── GND    (EW Crosswalk Stop)
+    Pin A4 ─[220Ω]──[Green LED]── GND  (EW Crosswalk Go)
+    Pin A5 ─[Button]── GND              (NS Walk Button)
+    Pin A6 ─[Button]── GND              (EW Walk Button)
+    Pin 0  ─[Buzzer]── GND              (Speaker — conflicts with Serial RX)
+    Pin 1  ─[Button]── GND              (Night-Mode — conflicts with Serial TX)
 
 PHYSICAL LAYOUT SUGGESTIONS:
 ===========================
