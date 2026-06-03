@@ -19,7 +19,6 @@ An Arduino-based simulation of a real 4-way intersection, complete with pedestri
 - [Testing](#testing)
 - [Known Issues](#known-issues)
 - [Project Structure](#project-structure)
-- [License](#license)
 
 ---
 
@@ -326,6 +325,3 @@ traffic_control_project/
 
 ---
 
-## License
-
-MIT License — see [LICENSE](LICENSE).
